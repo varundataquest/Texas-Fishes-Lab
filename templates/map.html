@@ -1,0 +1,528 @@
+{% extends "base.html" %}
+
+{% block title %}Interactive Map - Mexican Trout Biodiversity Project{% endblock %}
+
+{% block extra_css %}
+<style>
+    #map {
+        height: 600px;
+        width: 100%;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .map-controls {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+    
+    .legend {
+        background: white;
+        padding: 10px;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    .legend-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 5px;
+    }
+    
+    .legend-color {
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        margin-right: 10px;
+        border: 2px solid #333;
+    }
+    
+    .info-panel {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-map me-3"></i>Interactive Map</h1>
+            <p class="lead">Explore Mexican trout occurrences across the Sierra Madre Occidental</p>
+        </div>
+    </div>
+
+    <!-- Map Controls -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="map-controls">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label for="species-filter" class="form-label">Filter by Species:</label>
+                        <select class="form-select" id="species-filter">
+                            <option value="">All Species</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="basin-filter" class="form-label">Filter by Basin:</label>
+                        <select class="form-select" id="basin-filter">
+                            <option value="">All Basins</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label for="state-filter" class="form-label">Filter by State:</label>
+                        <select class="form-select" id="state-filter">
+                            <option value="">All States</option>
+                        </select>
+                        </div>
+                    <div class="col-md-3">
+                        <label for="year-filter" class="form-label">Filter by Year:</label>
+                        <select class="form-select" id="year-filter">
+                            <option value="">All Years</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-12">
+                        <button class="btn btn-primary me-2" id="clear-filters">
+                            <i class="fas fa-times me-2"></i>Clear Filters
+                        </button>
+                        <button class="btn btn-success me-2" id="export-map">
+                            <i class="fas fa-download me-2"></i>Export Map Data
+                        </button>
+                        <button class="btn btn-info" id="toggle-hydrography">
+                            <i class="fas fa-water me-2"></i>Toggle Hydrography
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map and Info Panel -->
+    <div class="row">
+        <div class="col-md-8">
+            <div id="map"></div>
+        </div>
+        <div class="col-md-4">
+            <!-- Statistics Panel -->
+            <div class="info-panel">
+                <h5><i class="fas fa-chart-bar me-2"></i>Map Statistics</h5>
+                <div class="row">
+                    <div class="col-6">
+                        <p class="mb-1"><strong>Total Points:</strong></p>
+                        <p class="mb-1"><strong>Visible Points:</strong></p>
+                        <p class="mb-1"><strong>Species Shown:</strong></p>
+                    </div>
+                    <div class="col-6">
+                        <p class="mb-1" id="total-points">-</p>
+                        <p class="mb-1" id="visible-points">-</p>
+                        <p class="mb-1" id="species-shown">-</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Legend -->
+            <div class="legend">
+                <h6><i class="fas fa-palette me-2"></i>Species Legend</h6>
+                <div id="species-legend">
+                    <!-- Legend items will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Selected Point Info -->
+            <div class="info-panel mt-3" id="point-info" style="display: none;">
+                <h6><i class="fas fa-info-circle me-2"></i>Selected Record</h6>
+                <div id="point-details">
+                    <!-- Point details will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-table me-2"></i>Occurrence Records</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped" id="occurrences-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Species</th>
+                                    <th>Date</th>
+                                    <th>Locality</th>
+                                    <th>State</th>
+                                    <th>Basin</th>
+                                    <th>Collectors</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Table data will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <nav aria-label="Table pagination">
+                        <ul class="pagination justify-content-center" id="pagination">
+                            <!-- Pagination will be populated by JavaScript -->
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let map;
+let markers = [];
+let currentLayer = null;
+let hydrographyLayer = null;
+let filteredData = [];
+
+// Color palette for species
+const speciesColors = [
+    '#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd',
+    '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+    '#a6cee3', '#fb9a99', '#fdbf6f', '#cab2d6', '#ff9896'
+];
+
+// Initialize map
+function initMap() {
+    // Center on Mexico
+    map = L.map('map').setView([25.0, -105.0], 6);
+    
+    // Add base tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+    
+    // Add satellite imagery option
+    const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '© Esri'
+    });
+    
+    // Layer control
+    const baseMaps = {
+        "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'),
+        "Satellite": satelliteLayer
+    };
+    
+    L.control.layers(baseMaps).addTo(map);
+    
+    // Load occurrence data
+    loadOccurrenceData();
+    
+    // Load filter options
+    loadFilterOptions();
+}
+
+// Load occurrence data
+function loadOccurrenceData() {
+    fetch('/api/map-data')
+        .then(response => response.json())
+        .then(data => {
+            filteredData = data.features;
+            displayMarkers(data.features);
+            updateStatistics(data.features);
+            updateTable(data.features);
+        })
+        .catch(error => {
+            console.error('Error loading occurrence data:', error);
+        });
+}
+
+// Display markers on map
+function displayMarkers(features) {
+    // Clear existing markers
+    markers.forEach(marker => map.removeLayer(marker));
+    markers = [];
+    
+    // Group by species for legend
+    const speciesGroups = {};
+    
+    features.forEach((feature, index) => {
+        const props = feature.properties;
+        const species = props.species || 'Unknown';
+        
+        // Get color for species
+        if (!speciesGroups[species]) {
+            speciesGroups[species] = speciesColors[Object.keys(speciesGroups).length % speciesColors.length];
+        }
+        
+        const color = speciesGroups[species];
+        
+        // Create marker
+        const marker = L.circleMarker([feature.geometry.coordinates[1], feature.geometry.coordinates[0]], {
+            radius: 8,
+            fillColor: color,
+            color: '#fff',
+            weight: 2,
+            opacity: 1,
+            fillOpacity: 0.8
+        });
+        
+        // Add popup
+        const popupContent = `
+            <div style="min-width: 200px;">
+                <h6><strong>${species}</strong></h6>
+                <p><strong>ID:</strong> ${props.unique_record_id}</p>
+                <p><strong>Date:</strong> ${props.collection_date || 'Unknown'}</p>
+                <p><strong>Locality:</strong> ${props.locality || 'Unknown'}</p>
+                <p><strong>State:</strong> ${props.state || 'Unknown'}</p>
+                <p><strong>Basin:</strong> ${props.basin || 'Unknown'}</p>
+                <p><strong>Collectors:</strong> ${props.collectors || 'Unknown'}</p>
+                <p><strong>Field #:</strong> ${props.field_number || 'Unknown'}</p>
+            </div>
+        `;
+        
+        marker.bindPopup(popupContent);
+        
+        // Add click event
+        marker.on('click', function() {
+            showPointInfo(props);
+            highlightTableRow(props.id);
+        });
+        
+        marker.addTo(map);
+        markers.push(marker);
+    });
+    
+    // Update legend
+    updateLegend(speciesGroups);
+}
+
+// Update legend
+function updateLegend(speciesGroups) {
+    const legendContainer = document.getElementById('species-legend');
+    legendContainer.innerHTML = '';
+    
+    Object.entries(speciesGroups).forEach(([species, color]) => {
+        const legendItem = document.createElement('div');
+        legendItem.className = 'legend-item';
+        legendItem.innerHTML = `
+            <div class="legend-color" style="background-color: ${color};"></div>
+            <span>${species}</span>
+        `;
+        legendContainer.appendChild(legendItem);
+    });
+}
+
+// Show point information
+function showPointInfo(props) {
+    const pointInfo = document.getElementById('point-info');
+    const pointDetails = document.getElementById('point-details');
+    
+    pointDetails.innerHTML = `
+        <p><strong>Species:</strong> ${props.species || 'Unknown'}</p>
+        <p><strong>Record ID:</strong> ${props.unique_record_id}</p>
+        <p><strong>Collection Date:</strong> ${props.collection_date || 'Unknown'}</p>
+        <p><strong>Locality:</strong> ${props.locality || 'Unknown'}</p>
+        <p><strong>State:</strong> ${props.state || 'Unknown'}</p>
+        <p><strong>River Basin:</strong> ${props.basin || 'Unknown'}</p>
+        <p><strong>Collectors:</strong> ${props.collectors || 'Unknown'}</p>
+        <p><strong>Field Number:</strong> ${props.field_number || 'Unknown'}</p>
+        <p><strong>Institution:</strong> ${props.institution || 'Unknown'}</p>
+        <p><strong>Catalog Number:</strong> ${props.catalog_number || 'Unknown'}</p>
+    `;
+    
+    pointInfo.style.display = 'block';
+}
+
+// Load filter options
+function loadFilterOptions() {
+    fetch('/api/statistics')
+        .then(response => response.json())
+        .then(data => {
+            // Populate species filter
+            const speciesFilter = document.getElementById('species-filter');
+            data.species.forEach(species => {
+                const option = document.createElement('option');
+                option.value = species;
+                option.textContent = species;
+                speciesFilter.appendChild(option);
+            });
+            
+            // Populate basin filter
+            const basinFilter = document.getElementById('basin-filter');
+            data.basins.forEach(basin => {
+                const option = document.createElement('option');
+                option.value = basin;
+                option.textContent = basin;
+                basinFilter.appendChild(option);
+            });
+            
+            // Populate state filter
+            const stateFilter = document.getElementById('state-filter');
+            data.states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state;
+                option.textContent = state;
+                stateFilter.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading filter options:', error);
+        });
+}
+
+// Apply filters
+function applyFilters() {
+    const speciesFilter = document.getElementById('species-filter').value;
+    const basinFilter = document.getElementById('basin-filter').value;
+    const stateFilter = document.getElementById('state-filter').value;
+    const yearFilter = document.getElementById('year-filter').value;
+    
+    fetch('/api/occurrences?' + new URLSearchParams({
+        species: speciesFilter,
+        basin: basinFilter,
+        state: stateFilter,
+        per_page: 1000
+    }))
+    .then(response => response.json())
+    .then(data => {
+        let filtered = data.records;
+        
+        // Apply year filter
+        if (yearFilter) {
+            filtered = filtered.filter(record => {
+                if (record.collection_date) {
+                    return record.collection_date.startsWith(yearFilter);
+                }
+                return false;
+            });
+        }
+        
+        // Convert to GeoJSON format for map
+        const geojsonFeatures = filtered.map(record => ({
+            type: 'Feature',
+            geometry: {
+                type: 'Point',
+                coordinates: [record.longitude, record.latitude]
+            },
+            properties: record
+        })).filter(feature => feature.geometry.coordinates[0] && feature.geometry.coordinates[1]);
+        
+        filteredData = geojsonFeatures;
+        displayMarkers(geojsonFeatures);
+        updateStatistics(geojsonFeatures);
+        updateTable(geojsonFeatures);
+    })
+    .catch(error => {
+        console.error('Error applying filters:', error);
+    });
+}
+
+// Update statistics
+function updateStatistics(features) {
+    document.getElementById('total-points').textContent = features.length;
+    document.getElementById('visible-points').textContent = features.length;
+    
+    const uniqueSpecies = new Set(features.map(f => f.properties.species).filter(s => s));
+    document.getElementById('species-shown').textContent = uniqueSpecies.size;
+}
+
+// Update table
+function updateTable(features) {
+    const tbody = document.querySelector('#occurrences-table tbody');
+    tbody.innerHTML = '';
+    
+    features.slice(0, 50).forEach(feature => {
+        const props = feature.properties;
+        const row = document.createElement('tr');
+        row.setAttribute('data-record-id', props.id);
+        row.innerHTML = `
+            <td>${props.unique_record_id}</td>
+            <td>${props.species || 'Unknown'}</td>
+            <td>${props.collection_date || 'Unknown'}</td>
+            <td>${props.locality || 'Unknown'}</td>
+            <td>${props.state || 'Unknown'}</td>
+            <td>${props.basin || 'Unknown'}</td>
+            <td>${props.collectors || 'Unknown'}</td>
+            <td>
+                <button class="btn btn-sm btn-primary" onclick="centerOnPoint(${props.longitude}, ${props.latitude})">
+                    <i class="fas fa-map-marker-alt"></i>
+                </button>
+            </td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+
+// Center map on point
+function centerOnPoint(lng, lat) {
+    map.setView([lat, lng], 12);
+}
+
+// Highlight table row
+function highlightTableRow(recordId) {
+    // Remove previous highlights
+    document.querySelectorAll('#occurrences-table tbody tr').forEach(row => {
+        row.classList.remove('table-warning');
+    });
+    
+    // Add highlight to matching row
+    const row = document.querySelector(`#occurrences-table tbody tr[data-record-id="${recordId}"]`);
+    if (row) {
+        row.classList.add('table-warning');
+        row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    initMap();
+    
+    // Filter event listeners
+    document.getElementById('species-filter').addEventListener('change', applyFilters);
+    document.getElementById('basin-filter').addEventListener('change', applyFilters);
+    document.getElementById('state-filter').addEventListener('change', applyFilters);
+    document.getElementById('year-filter').addEventListener('change', applyFilters);
+    
+    // Button event listeners
+    document.getElementById('clear-filters').addEventListener('click', function() {
+        document.getElementById('species-filter').value = '';
+        document.getElementById('basin-filter').value = '';
+        document.getElementById('state-filter').value = '';
+        document.getElementById('year-filter').value = '';
+        loadOccurrenceData();
+    });
+    
+    document.getElementById('export-map').addEventListener('click', function() {
+        const csvContent = "data:text/csv;charset=utf-8," + 
+            "ID,Species,Date,Latitude,Longitude,Locality,State,Basin,Collectors\n" +
+            filteredData.map(f => {
+                const p = f.properties;
+                return `${p.unique_record_id},"${p.species || ''}","${p.collection_date || ''}",${p.latitude || ''},${p.longitude || ''},"${p.locality || ''}","${p.state || ''}","${p.basin || ''}","${p.collectors || ''}"`;
+            }).join('\n');
+        
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", "mexican_trout_occurrences.csv");
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    });
+    
+    document.getElementById('toggle-hydrography').addEventListener('click', function() {
+        // Placeholder for hydrography layer toggle
+        alert('Hydrography layer functionality will be implemented in the next phase');
+    });
+});
+</script>
+{% endblock %} 

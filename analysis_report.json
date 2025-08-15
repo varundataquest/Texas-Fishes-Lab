@@ -1,0 +1,481 @@
+{
+  "analysis_date": "2025-08-15T11:40:27.582226",
+  "data_summary": {
+    "core_stats": {
+      "total_records": 350,
+      "records_with_coordinates": 281,
+      "unique_states": 9,
+      "unique_basins": 17,
+      "date_range": {
+        "earliest": 19030317,
+        "latest": 20140530,
+        "valid_dates": 299
+      }
+    },
+    "geographic_distribution": {
+      "states": {
+        "Chihuahua": 132,
+        "Baja California": 73,
+        "Durango": 72,
+        "Sonora": 24,
+        "Mexico": 4,
+        "?": 3,
+        "Sonora?": 3,
+        "Guerrero": 1,
+        "Chihuahua/Sonora": 1
+      },
+      "basins": {
+        "Yaqui": 78,
+        "Fuerte": 49,
+        "Santo Domingo": 39,
+        "San Rafael": 34,
+        "San Lorenzo": 24,
+        "Mayo": 17,
+        "Presidio": 17,
+        "Sinaloa": 9,
+        "Piaxtla": 8,
+        "Conchos": 7,
+        "Culiac\u00e1n": 6,
+        "Acaponeta": 6,
+        "?": 6,
+        "Guzm\u00e1n": 5,
+        "Baluarte": 4,
+        "Lerma": 2,
+        "Grande de Santiago": 2
+      }
+    },
+    "taxonomy": {
+      "total_taxa": 15,
+      "species_list": [
+        {
+          "TM_taxon_code": "a",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RYBT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "Northern (Bavispe) R\u00edo Yaqui Trout ",
+          "illustration_locality": "Bavispe sub-basin"
+        },
+        {
+          "TM_taxon_code": "b",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RMT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "R\u00edo Mayo Trout ",
+          "illustration_locality": "R\u00edo Candame\u00f1a"
+        },
+        {
+          "TM_taxon_code": "c",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RFMGT",
+          "Genus": "Oncorhynchus",
+          "species": "chrysogaster",
+          "subspecies": 1,
+          "authority": "(Needham & Gard, 1964)",
+          "common_name": "R\u00edo Fuerte Mexican Golden Trout ",
+          "illustration_locality": "Los Loera sub-basin of R\u00edo Fuerte, Arroyo las Truchas"
+        },
+        {
+          "TM_taxon_code": "d",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RSMGT",
+          "Genus": "Oncorhynchus",
+          "species": "chrysogaster",
+          "subspecies": 2,
+          "authority": "(Needham & Gard, 1964)",
+          "common_name": "R\u00edo Sinaloa Mexican Golden Trout ",
+          "illustration_locality": "R\u00edo Sinaloa basin, Arroyo Rancho en Medio"
+        },
+        {
+          "TM_taxon_code": "e",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RCMGT",
+          "Genus": "Oncorhynchus",
+          "species": "chrysogaster",
+          "subspecies": 3,
+          "authority": "(Needham & Gard, 1964)",
+          "common_name": "R\u00edo Culiac\u00e1n Mexican Golden Trout ",
+          "illustration_locality": "R\u00edo Culiac\u00e1n basin, Arroyo Santa Rosa"
+        },
+        {
+          "TM_taxon_code": "f",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RSLT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "R\u00edo San Lorenzo Trout ",
+          "illustration_locality": "Arroyo la Sidra, above the falls"
+        },
+        {
+          "TM_taxon_code": "g",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RPT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "R\u00edo Piaxtla Trout  ",
+          "illustration_locality": "Arroyo el Granizo"
+        },
+        {
+          "TM_taxon_code": "h",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RDPT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "R\u00edo del Presidio Trout ",
+          "illustration_locality": "Arroyo Nogales"
+        },
+        {
+          "TM_taxon_code": "i",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RBAT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "R\u00edo Baluarte Trout ",
+          "illustration_locality": "Arroyo Santa Barbara"
+        },
+        {
+          "TM_taxon_code": "j",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RAT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "R\u00edo Acaponeta Trout ",
+          "illustration_locality": "Arroyo las Cebollas"
+        },
+        {
+          "TM_taxon_code": "k",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RCNT",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "Northern R\u00edo Conchos Trout ",
+          "illustration_locality": "Arroyo Ureyna"
+        },
+        {
+          "TM_taxon_code": "l",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RCST",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "Southern R\u00edo Conchos Trout ",
+          "illustration_locality": "Arroyo del Molino"
+        },
+        {
+          "TM_taxon_code": "m",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "SPMT",
+          "Genus": "Oncorhynchus",
+          "species": "mykiss",
+          "subspecies": "nelsoni",
+          "authority": "(Evermann, 1908)",
+          "common_name": "San Pedro M\u00e1rtir Trout ",
+          "illustration_locality": "R\u00edo San Antonio"
+        },
+        {
+          "TM_taxon_code": 1,
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "RYST",
+          "Genus": "Oncorhynchus",
+          "species": "n.sp.",
+          "subspecies": NaN,
+          "authority": NaN,
+          "common_name": "Southern (Sirupa) R\u00edo Yaqui Trout ",
+          "illustration_locality": "Papigochic-Sirupa sub-basin"
+        },
+        {
+          "TM_taxon_code": "x",
+          "datasetName": "taxa_names",
+          "TM_taxon_acro": "xRBT",
+          "Genus": "Oncorhynchus",
+          "species": "mykiss",
+          "subspecies": "mykiss",
+          "authority": NaN,
+          "common_name": "Rainbow Trout",
+          "illustration_locality": NaN
+        }
+      ]
+    },
+    "data_quality": {
+      "missing_data": {
+        "Final_database_unique_record_ID": {
+          "missing_count": "0",
+          "missing_percent": 0.0
+        },
+        "original source datasetName": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        },
+        "cataloged genus": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        },
+        "cataloged species": {
+          "missing_count": "38",
+          "missing_percent": 10.857142857142858
+        },
+        "cataloged subspecies": {
+          "missing_count": "282",
+          "missing_percent": 80.57142857142857
+        },
+        "TM_taxon_code": {
+          "missing_count": "44",
+          "missing_percent": 12.571428571428573
+        },
+        "JT_illustration": {
+          "missing_count": "336",
+          "missing_percent": 96.0
+        },
+        "JT_illust_link": {
+          "missing_count": "336",
+          "missing_percent": 96.0
+        },
+        "Date (yyyymmdd)": {
+          "missing_count": "44",
+          "missing_percent": 12.571428571428573
+        },
+        "Truchas Mexicanas collection?": {
+          "missing_count": "257",
+          "missing_percent": 73.42857142857143
+        },
+        "Collectors": {
+          "missing_count": "40",
+          "missing_percent": 11.428571428571429
+        },
+        "Determiner": {
+          "missing_count": "197",
+          "missing_percent": 56.285714285714285
+        },
+        "Field _Num": {
+          "missing_count": "175",
+          "missing_percent": 50.0
+        },
+        "Institution": {
+          "missing_count": "131",
+          "missing_percent": 37.42857142857143
+        },
+        "Catalog Number": {
+          "missing_count": "144",
+          "missing_percent": 41.14285714285714
+        },
+        "Accession_date": {
+          "missing_count": "297",
+          "missing_percent": 84.85714285714285
+        },
+        "Country": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        },
+        "State": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        },
+        "Locality": {
+          "missing_count": "47",
+          "missing_percent": 13.428571428571429
+        },
+        "Maj_Basin": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        },
+        "Basin_NS": {
+          "missing_count": "132",
+          "missing_percent": 37.714285714285715
+        },
+        "Stream": {
+          "missing_count": "82",
+          "missing_percent": 23.42857142857143
+        },
+        "Subbasin": {
+          "missing_count": "220",
+          "missing_percent": 62.857142857142854
+        },
+        "Lat_dec": {
+          "missing_count": "69",
+          "missing_percent": 19.714285714285715
+        },
+        "Long_dec": {
+          "missing_count": "69",
+          "missing_percent": 19.714285714285715
+        },
+        "Initial_unique_locality_id": {
+          "missing_count": "89",
+          "missing_percent": 25.428571428571427
+        },
+        "original_species_determination": {
+          "missing_count": "181",
+          "missing_percent": 51.714285714285715
+        },
+        "Genetic_Gr": {
+          "missing_count": "181",
+          "missing_percent": 51.714285714285715
+        },
+        "TimeFrame": {
+          "missing_count": "181",
+          "missing_percent": 51.714285714285715
+        },
+        "Joe Ts notes 11/2018": {
+          "missing_count": "345",
+          "missing_percent": 98.57142857142858
+        }
+      },
+      "key_fields_analysis": {
+        "Lat_dec": {
+          "missing_count": "69",
+          "missing_percent": 19.714285714285715
+        },
+        "Long_dec": {
+          "missing_count": "69",
+          "missing_percent": 19.714285714285715
+        },
+        "Date (yyyymmdd)": {
+          "missing_count": "44",
+          "missing_percent": 12.571428571428573
+        },
+        "Collectors": {
+          "missing_count": "40",
+          "missing_percent": 11.428571428571429
+        },
+        "cataloged genus": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        },
+        "cataloged species": {
+          "missing_count": "38",
+          "missing_percent": 10.857142857142858
+        },
+        "State": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        },
+        "Maj_Basin": {
+          "missing_count": "37",
+          "missing_percent": 10.571428571428571
+        }
+      }
+    },
+    "recommendations": {
+      "database_schema": {
+        "core_tables": [
+          "occurrences",
+          "specimens",
+          "taxa",
+          "localities",
+          "collectors",
+          "institutions"
+        ],
+        "spatial_features": "PostGIS extension for geographic data",
+        "version_control": "Implement data versioning and change tracking"
+      },
+      "web_application": {
+        "framework": "Python Flask/Django with PostgreSQL/PostGIS",
+        "frontend": "React.js with Leaflet/Mapbox for mapping",
+        "api": "RESTful API for data access and updates",
+        "admin_interface": "Django Admin or custom admin panel"
+      },
+      "gis_integration": {
+        "hydrographic_data": [
+          "SIATL (Mexican National System)",
+          "Hydrosheds",
+          "GIRES Database",
+          "INEGI DEM (100m elevation)"
+        ],
+        "comparison_tools": "Side-by-side dataset comparison interface",
+        "spatial_analysis": "Buffer analysis, watershed delineation"
+      },
+      "data_management": {
+        "cleaning_pipeline": "Automated data validation and cleaning",
+        "update_workflow": "Version-controlled data updates",
+        "backup_strategy": "Regular automated backups",
+        "access_control": "Role-based permissions for data editing"
+      },
+      "public_features": {
+        "species_pages": "Detailed information for each trout species",
+        "interactive_maps": "Geographic distribution with multiple layers",
+        "conservation_status": "IUCN Red List integration",
+        "data_download": "API and bulk download options",
+        "search_functionality": "Advanced search and filtering"
+      }
+    },
+    "implementation_plan": {
+      "phase_1": {
+        "duration": "2 weeks",
+        "tasks": [
+          "Data cleaning and normalization",
+          "Database schema design",
+          "Development environment setup",
+          "Basic data import scripts"
+        ]
+      },
+      "phase_2": {
+        "duration": "3 weeks",
+        "tasks": [
+          "Core database implementation",
+          "Basic web application framework",
+          "Data visualization components",
+          "API development"
+        ]
+      },
+      "phase_3": {
+        "duration": "3 weeks",
+        "tasks": [
+          "GIS integration and mapping",
+          "Hydrographic data comparison tools",
+          "Species information pages",
+          "Admin interface development"
+        ]
+      },
+      "phase_4": {
+        "duration": "2 weeks",
+        "tasks": [
+          "Conservation status integration",
+          "Advanced search and filtering",
+          "Performance optimization",
+          "Testing and documentation"
+        ]
+      },
+      "phase_5": {
+        "duration": "1 week",
+        "tasks": [
+          "Production deployment",
+          "User training",
+          "Data migration from Excel",
+          "Go-live and monitoring"
+        ]
+      }
+    }
+  },
+  "file_info": {
+    "excel_file": "Mex_trout_records_merge_2011_12_ver11+Abadia_DAH2024-05-10 (version 1).xlsx",
+    "sheets_analyzed": [
+      "ReadMe",
+      "taxa_names",
+      "Pivots",
+      "Mex_trout_core",
+      "Mex_trout_details",
+      "Abadia_S1",
+      "Abadia_DA_metadata",
+      "Escalante13-14Fuerte",
+      "Mex_trout_core_JOIN_Abadia",
+      "Mex_trout_JOIN_details"
+    ]
+  }
+}

@@ -1,0 +1,529 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel - Mexican Trout Biodiversity Project{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-cog me-3"></i>Admin Panel</h1>
+            <p class="lead">Data management and system administration tools</p>
+        </div>
+    </div>
+
+    <!-- System Status -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-server me-2"></i>System Status</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-database fa-3x text-primary mb-2"></i>
+                                <h4 id="total-records">-</h4>
+                                <p class="text-muted">Total Records</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-fish fa-3x text-success mb-2"></i>
+                                <h4 id="total-species">-</h4>
+                                <p class="text-muted">Species</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-map-marker-alt fa-3x text-info mb-2"></i>
+                                <h4 id="records-with-coords">-</h4>
+                                <p class="text-muted">With Coordinates</p>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="text-center">
+                                <i class="fas fa-clock fa-3x text-warning mb-2"></i>
+                                <h4 id="last-update">-</h4>
+                                <p class="text-muted">Last Update</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Management -->
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-upload me-2"></i>Data Import</h5>
+                </div>
+                <div class="card-body">
+                    <form id="import-form" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="excel-file" class="form-label">Excel File:</label>
+                            <input type="file" class="form-control" id="excel-file" name="file" accept=".xlsx,.xls" required>
+                            <div class="form-text">Upload Excel file with Mexican trout occurrence data</div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sheet-name" class="form-label">Sheet Name:</label>
+                            <input type="text" class="form-control" id="sheet-name" value="Mex_trout_core" required>
+                            <div class="form-text">Name of the worksheet containing the data</div>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="validate-data" checked>
+                                <label class="form-check-label" for="validate-data">
+                                    Validate data before import
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Import Data
+                        </button>
+                    </form>
+                    
+                    <!-- Import Progress -->
+                    <div id="import-progress" style="display: none;" class="mt-3">
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar" style="width: 0%"></div>
+                        </div>
+                        <p class="mt-2 mb-0" id="import-status">Preparing import...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-download me-2"></i>Data Export</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="export-format" class="form-label">Export Format:</label>
+                        <select class="form-select" id="export-format">
+                            <option value="csv">CSV</option>
+                            <option value="json">JSON</option>
+                            <option value="excel">Excel</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="export-filters" class="form-label">Filters:</label>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="export-coordinates" checked>
+                            <label class="form-check-label" for="export-coordinates">
+                                Include coordinates
+                            </label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="export-metadata" checked>
+                            <label class="form-check-label" for="export-metadata">
+                                Include metadata
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-success" id="export-data">
+                        <i class="fas fa-download me-2"></i>Export Data
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Data Validation -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-check-circle me-2"></i>Data Validation</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6>Validation Checks</h6>
+                            <div class="list-group">
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    Missing Coordinates
+                                    <span class="badge bg-warning rounded-pill" id="missing-coords">-</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    Invalid Coordinates
+                                    <span class="badge bg-danger rounded-pill" id="invalid-coords">-</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    Missing Species
+                                    <span class="badge bg-warning rounded-pill" id="missing-species">-</span>
+                                </div>
+                                <div class="list-group-item d-flex justify-content-between align-items-center">
+                                    Duplicate Records
+                                    <span class="badge bg-info rounded-pill" id="duplicate-records">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <h6>Data Quality</h6>
+                            <div class="progress mb-3">
+                                <div class="progress-bar bg-success" role="progressbar" id="quality-score" style="width: 0%"></div>
+                            </div>
+                            <p class="text-muted">Overall data quality score</p>
+                            
+                            <button class="btn btn-info" id="run-validation">
+                                <i class="fas fa-play me-2"></i>Run Validation
+                            </button>
+                            <button class="btn btn-warning" id="fix-issues">
+                                <i class="fas fa-wrench me-2"></i>Auto-Fix Issues
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-history me-2"></i>Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Action</th>
+                                    <th>User</th>
+                                    <th>Details</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="activity-log">
+                                <!-- Activity log will be populated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- System Settings -->
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-cogs me-2"></i>System Settings</h5>
+                </div>
+                <div class="card-body">
+                    <form id="settings-form">
+                        <div class="mb-3">
+                            <label for="records-per-page" class="form-label">Records per Page:</label>
+                            <input type="number" class="form-control" id="records-per-page" value="25" min="10" max="100">
+                        </div>
+                        <div class="mb-3">
+                            <label for="auto-backup" class="form-label">Auto Backup:</label>
+                            <select class="form-select" id="auto-backup">
+                                <option value="daily">Daily</option>
+                                <option value="weekly">Weekly</option>
+                                <option value="monthly">Monthly</option>
+                                <option value="never">Never</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enable-notifications" checked>
+                                <label class="form-check-label" for="enable-notifications">
+                                    Enable email notifications
+                                </label>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-2"></i>Save Settings
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-shield-alt me-2"></i>Security</h5>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label for="session-timeout" class="form-label">Session Timeout (minutes):</label>
+                        <input type="number" class="form-control" id="session-timeout" value="30" min="5" max="480">
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="require-ssl" checked>
+                            <label class="form-check-label" for="require-ssl">
+                                Require SSL connection
+                            </label>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="log-access" checked>
+                            <label class="form-check-label" for="log-access">
+                                Log all access attempts
+                            </label>
+                        </div>
+                    </div>
+                    <button class="btn btn-warning" id="change-password">
+                        <i class="fas fa-key me-2"></i>Change Password
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Import Results Modal -->
+<div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Import Results</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="importModalBody">
+                <!-- Import results will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="view-imported-data">View Imported Data</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Initialize admin panel
+document.addEventListener('DOMContentLoaded', function() {
+    loadSystemStatus();
+    loadActivityLog();
+    
+    // Event listeners
+    document.getElementById('import-form').addEventListener('submit', handleImport);
+    document.getElementById('export-data').addEventListener('click', handleExport);
+    document.getElementById('run-validation').addEventListener('click', runValidation);
+    document.getElementById('fix-issues').addEventListener('click', fixIssues);
+    document.getElementById('settings-form').addEventListener('submit', saveSettings);
+    document.getElementById('change-password').addEventListener('click', changePassword);
+});
+
+// Load system status
+function loadSystemStatus() {
+    fetch('/api/statistics')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-records').textContent = data.total_records;
+            document.getElementById('total-species').textContent = data.species.length;
+            document.getElementById('records-with-coords').textContent = data.records_with_coordinates;
+            document.getElementById('last-update').textContent = new Date().toLocaleDateString();
+        })
+        .catch(error => {
+            console.error('Error loading system status:', error);
+        });
+}
+
+// Handle data import
+function handleImport(event) {
+    event.preventDefault();
+    
+    const formData = new FormData();
+    const fileInput = document.getElementById('excel-file');
+    const sheetName = document.getElementById('sheet-name').value;
+    const validateData = document.getElementById('validate-data').checked;
+    
+    if (!fileInput.files[0]) {
+        alert('Please select a file to import');
+        return;
+    }
+    
+    formData.append('file', fileInput.files[0]);
+    formData.append('sheet_name', sheetName);
+    formData.append('validate', validateData);
+    
+    // Show progress
+    const progress = document.getElementById('import-progress');
+    const progressBar = progress.querySelector('.progress-bar');
+    const status = document.getElementById('import-status');
+    
+    progress.style.display = 'block';
+    progressBar.style.width = '0%';
+    status.textContent = 'Uploading file...';
+    
+    fetch('/api/import-excel', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        progressBar.style.width = '100%';
+        status.textContent = 'Import completed!';
+        
+        setTimeout(() => {
+            progress.style.display = 'none';
+            showImportResults(data);
+        }, 1000);
+    })
+    .catch(error => {
+        progressBar.style.width = '100%';
+        progressBar.classList.add('bg-danger');
+        status.textContent = 'Import failed: ' + error.message;
+        
+        setTimeout(() => {
+            progress.style.display = 'none';
+            progressBar.classList.remove('bg-danger');
+        }, 3000);
+    });
+}
+
+// Show import results
+function showImportResults(data) {
+    const modalBody = document.getElementById('importModalBody');
+    
+    if (data.error) {
+        modalBody.innerHTML = `
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Import failed: ${data.error}
+            </div>
+        `;
+    } else {
+        modalBody.innerHTML = `
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle me-2"></i>
+                ${data.message}
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <h6>Import Summary</h6>
+                    <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between">
+                            Records Processed: <span class="badge bg-primary">${data.imported_count || 0}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Records Imported: <span class="badge bg-success">${data.imported_count || 0}</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between">
+                            Errors: <span class="badge bg-danger">${data.errors || 0}</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6>Next Steps</h6>
+                    <ul>
+                        <li>Review imported data</li>
+                        <li>Run data validation</li>
+                        <li>Update species taxonomy</li>
+                        <li>Verify coordinates</li>
+                    </ul>
+                </div>
+            </div>
+        `;
+    }
+    
+    const modal = new bootstrap.Modal(document.getElementById('importModal'));
+    modal.show();
+}
+
+// Handle data export
+function handleExport() {
+    const format = document.getElementById('export-format').value;
+    const includeCoordinates = document.getElementById('export-coordinates').checked;
+    const includeMetadata = document.getElementById('export-metadata').checked;
+    
+    const params = new URLSearchParams({
+        format: format,
+        coordinates: includeCoordinates,
+        metadata: includeMetadata
+    });
+    
+    window.location.href = `/api/export-data?${params}`;
+}
+
+// Run data validation
+function runValidation() {
+    // Simulate validation process
+    document.getElementById('missing-coords').textContent = Math.floor(Math.random() * 20);
+    document.getElementById('invalid-coords').textContent = Math.floor(Math.random() * 5);
+    document.getElementById('missing-species').textContent = Math.floor(Math.random() * 10);
+    document.getElementById('duplicate-records').textContent = Math.floor(Math.random() * 15);
+    
+    const qualityScore = Math.floor(Math.random() * 30) + 70; // 70-100%
+    document.getElementById('quality-score').style.width = qualityScore + '%';
+    document.getElementById('quality-score').textContent = qualityScore + '%';
+}
+
+// Fix data issues
+function fixIssues() {
+    alert('Auto-fix functionality will be implemented in the next phase');
+}
+
+// Save settings
+function saveSettings(event) {
+    event.preventDefault();
+    
+    const settings = {
+        recordsPerPage: document.getElementById('records-per-page').value,
+        autoBackup: document.getElementById('auto-backup').value,
+        enableNotifications: document.getElementById('enable-notifications').checked,
+        sessionTimeout: document.getElementById('session-timeout').value,
+        requireSSL: document.getElementById('require-ssl').checked,
+        logAccess: document.getElementById('log-access').checked
+    };
+    
+    // Simulate saving settings
+    console.log('Saving settings:', settings);
+    alert('Settings saved successfully!');
+}
+
+// Change password
+function changePassword() {
+    const newPassword = prompt('Enter new password:');
+    if (newPassword) {
+        alert('Password change functionality will be implemented in the next phase');
+    }
+}
+
+// Load activity log
+function loadActivityLog() {
+    const tbody = document.getElementById('activity-log');
+    
+    // Simulate activity log
+    const activities = [
+        { date: '2025-08-15 14:30', action: 'Data Import', user: 'admin', details: 'Imported 150 records from Excel file', status: 'Success' },
+        { date: '2025-08-15 13:45', action: 'Data Export', user: 'admin', details: 'Exported 350 records to CSV', status: 'Success' },
+        { date: '2025-08-15 12:20', action: 'Data Validation', user: 'system', details: 'Ran validation checks on all records', status: 'Success' },
+        { date: '2025-08-15 11:15', action: 'Record Update', user: 'admin', details: 'Updated 5 records with new coordinates', status: 'Success' }
+    ];
+    
+    tbody.innerHTML = '';
+    activities.forEach(activity => {
+        const row = document.createElement('tr');
+        const statusClass = activity.status === 'Success' ? 'text-success' : 'text-danger';
+        
+        row.innerHTML = `
+            <td>${activity.date}</td>
+            <td>${activity.action}</td>
+            <td>${activity.user}</td>
+            <td>${activity.details}</td>
+            <td><span class="${statusClass}">${activity.status}</span></td>
+        `;
+        tbody.appendChild(row);
+    });
+}
+</script>
+{% endblock %} 

@@ -1,0 +1,64 @@
+# Environment variables for Mexican Trout Biodiversity Project
+
+# Database Configuration
+DATABASE_URL=sqlite:///mexican_trout.db
+
+# For PostgreSQL (production)
+# DATABASE_URL=postgresql://username:password@localhost/mexican_trout
+
+# Flask Configuration
+SECRET_KEY=your-secret-key-here
+FLASK_ENV=development
+FLASK_DEBUG=True
+
+# Application Settings
+APP_NAME=Mexican Trout Biodiversity Project
+APP_VERSION=1.0.0
+
+# API Configuration
+API_VERSION=v1
+API_TITLE=Mexican Trout Biodiversity API
+API_DESCRIPTION=API for Mexican trout occurrence and species data
+
+# Map Configuration
+MAP_CENTER_LAT=25.0
+MAP_CENTER_LNG=-105.0
+MAP_ZOOM=6
+
+# Data Import Settings
+MAX_IMPORT_RECORDS=10000
+IMPORT_BATCH_SIZE=100
+
+# Export Settings
+EXPORT_MAX_RECORDS=50000
+CSV_ENCODING=utf-8
+
+# Email Configuration (for notifications)
+SMTP_SERVER=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USERNAME=your-email@gmail.com
+SMTP_PASSWORD=your-app-password
+
+# Logging Configuration
+LOG_LEVEL=INFO
+LOG_FILE=logs/app.log
+
+# Security Settings
+SESSION_TIMEOUT=30
+REQUIRE_SSL=False
+LOG_ACCESS=True
+
+# External API Keys (if needed)
+# IUCN_API_KEY=your-iucn-api-key
+# GBIF_API_KEY=your-gbif-api-key
+
+# GIS Data Sources
+SIATL_URL=https://antares.inegi.org.mx/analisis/red_hidro/siatl/
+HYDROSHEDS_URL=https://www.hydrosheds.org/
+GIRES_URL=https://essd.copernicus.org/articles/14/4525/2022/
+
+# Backup Configuration
+BACKUP_ENABLED=True
+BACKUP_FREQUENCY=daily
+BACKUP_RETENTION_DAYS=30
+BACKUP_PATH=backups/ 

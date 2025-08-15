@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Home - Mexican Trout Biodiversity Project{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Hero Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <div class="bg-primary text-white p-5 rounded">
+                <h1 class="display-4">
+                    <i class="fas fa-fish me-3"></i>
+                    Mexican Trout Biodiversity Project
+                </h1>
+                <p class="lead">
+                    Exploring the diversity and conservation of native Mexican trout species across the Sierra Madre Occidental
+                </p>
+                <p class="mb-0">
+                    This modern web platform replaces the discontinued British Museum Scratchpads system, 
+                    providing comprehensive data management and public access to Mexican trout biodiversity information.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Cards -->
+    <div class="row mb-5">
+        <div class="col-md-3 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-map-marker-alt fa-3x text-primary mb-3"></i>
+                    <h3 class="card-title" id="total-records">-</h3>
+                    <p class="card-text">Total Records</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-fish fa-3x text-success mb-3"></i>
+                    <h3 class="card-title" id="total-species">-</h3>
+                    <p class="card-text">Species</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-water fa-3x text-info mb-3"></i>
+                    <h3 class="card-title" id="total-basins">-</h3>
+                    <p class="card-text">River Basins</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 mb-3">
+            <div class="card text-center h-100">
+                <div class="card-body">
+                    <i class="fas fa-map fa-3x text-warning mb-3"></i>
+                    <h3 class="card-title" id="coordinate-percentage">-</h3>
+                    <p class="card-text">With Coordinates</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quick Access Section -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-4">Quick Access</h2>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-map fa-3x text-primary mb-3"></i>
+                    <h5 class="card-title">Interactive Map</h5>
+                    <p class="card-text">Explore Mexican trout occurrences across the Sierra Madre Occidental with our interactive mapping interface.</p>
+                    <a href="{{ url_for('map_view') }}" class="btn btn-primary">
+                        <i class="fas fa-map me-2"></i>View Map
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-list fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Species Directory</h5>
+                    <p class="card-text">Browse detailed information about Mexican trout species, including taxonomy and conservation status.</p>
+                    <a href="{{ url_for('species_list') }}" class="btn btn-success">
+                        <i class="fas fa-list me-2"></i>Browse Species
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-database fa-3x text-info mb-3"></i>
+                    <h5 class="card-title">Data Explorer</h5>
+                    <p class="card-text">Access and analyze occurrence data, genetic information, and hydrographic datasets.</p>
+                    <a href="{{ url_for('data_explorer') }}" class="btn btn-info">
+                        <i class="fas fa-database me-2"></i>Explore Data
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Project Overview -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-4">Project Overview</h2>
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Research Focus</h5>
+                    <p>
+                        The Mexican Trout Biodiversity Project focuses on the native trout species inhabiting the 
+                        Sierra Madre Occidental mountain range in Mexico. These trout represent unique evolutionary 
+                        lineages adapted to the complex hydrographic systems of northern Mexico.
+                    </p>
+                    <h5>Key Objectives</h5>
+                    <ul>
+                        <li>Document and map the distribution of Mexican trout species</li>
+                        <li>Assess conservation status and threats</li>
+                        <li>Integrate genetic and morphological data</li>
+                        <li>Compare hydrographic datasets for improved modeling</li>
+                        <li>Provide public access to biodiversity information</li>
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h5>Data Sources</h5>
+                    <ul>
+                        <li><strong>Occurrence Records:</strong> 350+ collection records from 1903-2014</li>
+                        <li><strong>Genetic Data:</strong> Abadia et al. (2015) population structure analysis</li>
+                        <li><strong>Hydrographic Data:</strong> SIATL, Hydrosheds, GIRES, INEGI DEM</li>
+                        <li><strong>Conservation Status:</strong> IUCN Red List assessments</li>
+                        <li><strong>Morphological Data:</strong> Casey Dillman's ongoing analyses</li>
+                    </ul>
+                    <h5>Geographic Coverage</h5>
+                    <p>
+                        The project covers 17 major river basins across 9 Mexican states, with particular focus 
+                        on the Yaqui and Fuerte basins which contain the highest diversity of native trout species.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recent Updates -->
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="mb-4">Recent Updates</h2>
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar me-2"></i>August 2025</h6>
+                            <p class="mb-2">Launched new web platform replacing discontinued Drupal system</p>
+                            
+                            <h6><i class="fas fa-calendar me-2"></i>May 2024</h6>
+                            <p class="mb-2">Resumed data cleaning and normalization efforts</p>
+                            
+                            <h6><i class="fas fa-calendar me-2"></i>October 2019</h6>
+                            <p class="mb-2">Completed IUCN conservation status assessments</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h6><i class="fas fa-calendar me-2"></i>2015</h6>
+                            <p class="mb-2">Published genetic structure analysis (Abadia et al.)</p>
+                            
+                            <h6><i class="fas fa-calendar me-2"></i>2006</h6>
+                            <p class="mb-2">Initial project overview publication</p>
+                            
+                            <h6><i class="fas fa-calendar me-2"></i>2003-2014</h6>
+                            <p class="mb-2">Intensive field collection campaigns</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Load statistics on page load
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/statistics')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('total-records').textContent = data.total_records;
+            document.getElementById('total-species').textContent = data.species.length;
+            document.getElementById('total-basins').textContent = data.basins.length;
+            document.getElementById('coordinate-percentage').textContent = data.coordinate_percentage + '%';
+        })
+        .catch(error => {
+            console.error('Error loading statistics:', error);
+        });
+});
+</script>
+{% endblock %} 

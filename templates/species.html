@@ -1,0 +1,286 @@
+{% extends "base.html" %}
+
+{% block title %}Species Directory - Mexican Trout Biodiversity Project{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1><i class="fas fa-list me-3"></i>Species Directory</h1>
+            <p class="lead">Browse Mexican trout species and their conservation status</p>
+        </div>
+    </div>
+
+    <!-- Search and Filter -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label for="search-species" class="form-label">Search Species:</label>
+                            <input type="text" class="form-control" id="search-species" placeholder="Enter species name...">
+                        </div>
+                        <div class="col-md-3">
+                            <label for="conservation-filter" class="form-label">Conservation Status:</label>
+                            <select class="form-select" id="conservation-filter">
+                                <option value="">All Statuses</option>
+                                <option value="Endangered">Endangered</option>
+                                <option value="Vulnerable">Vulnerable</option>
+                                <option value="Near Threatened">Near Threatened</option>
+                                <option value="Least Concern">Least Concern</option>
+                                <option value="Data Deficient">Data Deficient</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="basin-filter" class="form-label">Primary Basin:</label>
+                            <select class="form-select" id="basin-filter">
+                                <option value="">All Basins</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Species Grid -->
+    <div class="row" id="species-grid">
+        <!-- Species cards will be populated by JavaScript -->
+    </div>
+
+    <!-- Loading Spinner -->
+    <div class="row" id="loading" style="display: none;">
+        <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading species data...</p>
+        </div>
+    </div>
+
+    <!-- No Results Message -->
+    <div class="row" id="no-results" style="display: none;">
+        <div class="col-12 text-center">
+            <div class="alert alert-info">
+                <i class="fas fa-info-circle me-2"></i>
+                No species found matching your search criteria.
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Species Detail Modal -->
+<div class="modal fade" id="speciesModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalTitle">Species Details</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Species details will be populated by JavaScript -->
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="viewOnMap">View on Map</button>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+let allSpecies = [];
+let filteredSpecies = [];
+
+// Load species data
+function loadSpeciesData() {
+    document.getElementById('loading').style.display = 'block';
+    document.getElementById('species-grid').style.display = 'none';
+    document.getElementById('no-results').style.display = 'none';
+    
+    fetch('/api/species')
+        .then(response => response.json())
+        .then(data => {
+            allSpecies = data;
+            filteredSpecies = data;
+            displaySpecies();
+            populateFilters();
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('species-grid').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error loading species data:', error);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('no-results').style.display = 'block';
+        });
+}
+
+// Display species grid
+function displaySpecies() {
+    const grid = document.getElementById('species-grid');
+    grid.innerHTML = '';
+    
+    if (filteredSpecies.length === 0) {
+        document.getElementById('no-results').style.display = 'block';
+        return;
+    }
+    
+    document.getElementById('no-results').style.display = 'none';
+    
+    filteredSpecies.forEach(species => {
+        const col = document.createElement('div');
+        col.className = 'col-md-6 col-lg-4 mb-4';
+        
+        const statusClass = getStatusClass(species.conservation_status);
+        
+        col.innerHTML = `
+            <div class="card h-100 species-card" data-species-id="${species.id}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h5 class="card-title">${species.scientific_name}</h5>
+                        <span class="badge ${statusClass}">${species.conservation_status || 'Unknown'}</span>
+                    </div>
+                    ${species.common_name ? `<p class="card-text text-muted">${species.common_name}</p>` : ''}
+                    ${species.taxon_code ? `<p class="card-text"><small><strong>Taxon Code:</strong> ${species.taxon_code}</small></p>` : ''}
+                    ${species.iucn_assessment ? `<p class="card-text"><small><strong>IUCN Assessment:</strong> ${species.iucn_assessment}</small></p>` : ''}
+                </div>
+                <div class="card-footer">
+                    <button class="btn btn-sm btn-primary" onclick="showSpeciesDetails(${species.id})">
+                        <i class="fas fa-info-circle me-1"></i>Details
+                    </button>
+                    <button class="btn btn-sm btn-success" onclick="viewSpeciesOnMap('${species.scientific_name}')">
+                        <i class="fas fa-map me-1"></i>Map
+                    </button>
+                </div>
+            </div>
+        `;
+        
+        grid.appendChild(col);
+    });
+}
+
+// Get status badge class
+function getStatusClass(status) {
+    switch(status) {
+        case 'Endangered': return 'bg-danger';
+        case 'Vulnerable': return 'bg-warning';
+        case 'Near Threatened': return 'bg-info';
+        case 'Least Concern': return 'bg-success';
+        case 'Data Deficient': return 'bg-secondary';
+        default: return 'bg-secondary';
+    }
+}
+
+// Populate filter options
+function populateFilters() {
+    // Get unique basins from occurrence data
+    fetch('/api/statistics')
+        .then(response => response.json())
+        .then(data => {
+            const basinFilter = document.getElementById('basin-filter');
+            data.basins.forEach(basin => {
+                const option = document.createElement('option');
+                option.value = basin;
+                option.textContent = basin;
+                basinFilter.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error loading basin data:', error);
+        });
+}
+
+// Apply filters
+function applyFilters() {
+    const searchTerm = document.getElementById('search-species').value.toLowerCase();
+    const conservationStatus = document.getElementById('conservation-filter').value;
+    const basin = document.getElementById('basin-filter').value;
+    
+    filteredSpecies = allSpecies.filter(species => {
+        const matchesSearch = !searchTerm || 
+            species.scientific_name.toLowerCase().includes(searchTerm) ||
+            (species.common_name && species.common_name.toLowerCase().includes(searchTerm));
+        
+        const matchesStatus = !conservationStatus || species.conservation_status === conservationStatus;
+        
+        // Note: Basin filtering would require additional API calls to get species-basin relationships
+        const matchesBasin = !basin; // Placeholder for basin filtering
+        
+        return matchesSearch && matchesStatus && matchesBasin;
+    });
+    
+    displaySpecies();
+}
+
+// Show species details modal
+function showSpeciesDetails(speciesId) {
+    const species = allSpecies.find(s => s.id === speciesId);
+    if (!species) return;
+    
+    document.getElementById('modalTitle').textContent = species.scientific_name;
+    
+    const modalBody = document.getElementById('modalBody');
+    modalBody.innerHTML = `
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Taxonomy</h6>
+                <p><strong>Scientific Name:</strong> ${species.scientific_name}</p>
+                ${species.common_name ? `<p><strong>Common Name:</strong> ${species.common_name}</p>` : ''}
+                ${species.taxon_code ? `<p><strong>Taxon Code:</strong> ${species.taxon_code}</p>` : ''}
+                
+                <h6 class="mt-3">Conservation</h6>
+                <p><strong>Status:</strong> <span class="badge ${getStatusClass(species.conservation_status)}">${species.conservation_status || 'Unknown'}</span></p>
+                ${species.iucn_assessment ? `<p><strong>IUCN Assessment:</strong> ${species.iucn_assessment}</p>` : ''}
+            </div>
+            <div class="col-md-6">
+                <h6>Description</h6>
+                ${species.description ? `<p>${species.description}</p>` : '<p class="text-muted">No description available.</p>'}
+                
+                <h6 class="mt-3">Actions</h6>
+                <button class="btn btn-primary me-2" onclick="viewSpeciesOnMap('${species.scientific_name}')">
+                    <i class="fas fa-map me-1"></i>View on Map
+                </button>
+                <button class="btn btn-info" onclick="viewOccurrences('${species.scientific_name}')">
+                    <i class="fas fa-list me-1"></i>View Occurrences
+                </button>
+            </div>
+        </div>
+    `;
+    
+    // Store species name for map view
+    document.getElementById('viewOnMap').onclick = () => viewSpeciesOnMap(species.scientific_name);
+    
+    const modal = new bootstrap.Modal(document.getElementById('speciesModal'));
+    modal.show();
+}
+
+// View species on map
+function viewSpeciesOnMap(speciesName) {
+    // Close modal if open
+    const modal = bootstrap.Modal.getInstance(document.getElementById('speciesModal'));
+    if (modal) modal.hide();
+    
+    // Navigate to map with species filter
+    window.location.href = `/map?species=${encodeURIComponent(speciesName)}`;
+}
+
+// View species occurrences
+function viewOccurrences(speciesName) {
+    // Navigate to data explorer with species filter
+    window.location.href = `/data?species=${encodeURIComponent(speciesName)}`;
+}
+
+// Event listeners
+document.addEventListener('DOMContentLoaded', function() {
+    loadSpeciesData();
+    
+    // Search and filter event listeners
+    document.getElementById('search-species').addEventListener('input', applyFilters);
+    document.getElementById('conservation-filter').addEventListener('change', applyFilters);
+    document.getElementById('basin-filter').addEventListener('change', applyFilters);
+});
+</script>
+{% endblock %} 
